@@ -2,7 +2,8 @@
 .env.*
 .venv/
 tests/
+scripts/
+requirements-dev.txt
 docs/
 __pycache__/
 .pytest_cache/
-

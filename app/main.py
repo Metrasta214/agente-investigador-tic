@@ -1,5 +1,7 @@
 import secrets
 import logging
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -11,7 +13,7 @@ from app.services.investigador_service import InvestigadorService
 
 settings = Settings()
 service = InvestigadorService(settings)
-app = FastAPI(title="Radar TIC", version="1.0.0")
+app = FastAPI(title="Radar TIC", version="1.0.0", docs_url=None, redoc_url=None)
 if settings.cors_origins:
     app.add_middleware(CORSMiddleware, allow_origins=list(settings.cors_origins),
                        allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-Access-Token"])
@@ -21,10 +23,21 @@ async def security_headers(request, call_next):
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
-    response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'"
+    response.headers.setdefault("Content-Security-Policy", "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'")
     if request.url.path.startswith("/api"):
         response.headers["Cache-Control"] = "no-store"
     return response
+
+@app.get("/docs", include_in_schema=False)
+def api_docs():
+    nonce = secrets.token_urlsafe(24)
+    page = get_swagger_ui_html(openapi_url=app.openapi_url, title="Radar TIC · API",
+                              swagger_favicon_url="/assets/favicon.svg")
+    html = page.body.decode("utf-8").replace("<script>", f'<script nonce="{nonce}">')
+    policy = ("default-src 'self'; style-src 'self' https://cdn.jsdelivr.net; "
+              f"script-src 'self' https://cdn.jsdelivr.net 'nonce-{nonce}'; "
+              "img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'")
+    return HTMLResponse(html, headers={"Content-Security-Policy": policy, "Cache-Control": "no-store"})
 
 @app.get("/", include_in_schema=False)
 def index():
@@ -37,10 +50,12 @@ def favicon():
 @app.get("/api/health")
 def health():
     return {"ok": True, "configurada": bool(settings.api_key), "modelo": settings.model,
-            "acceso_requerido": bool(settings.access_token)}
+            "acceso_requerido": bool(settings.access_token) or settings.vercel}
 
 @app.post("/api/investigar", response_model=InvestigacionResponse)
 async def investigar(body: InvestigacionRequest, x_access_token: str = Header(default="")):
+    if (settings.vercel and not settings.access_token) or (settings.api_key and settings.access_token == settings.api_key):
+        raise HTTPException(503, "Configura APP_ACCESS_TOKEN con un código distinto de la API Key antes de habilitar consultas.")
     if settings.access_token and not secrets.compare_digest(x_access_token.encode(), settings.access_token.encode()):
         raise HTTPException(401, "Código de acceso incorrecto.")
     try:
@@ -62,4 +77,3 @@ async def investigar(body: InvestigacionRequest, x_access_token: str = Header(de
         raise HTTPException(500, "Ocurrió un error interno. Revisa el servidor.") from None
 
 app.mount("/assets", StaticFiles(directory=ROOT / "assets"), name="assets")
-

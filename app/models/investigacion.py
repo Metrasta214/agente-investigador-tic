@@ -30,7 +30,9 @@ class InvestigacionResponse(BaseModel):
     fecha: str
     web_solicitada: bool
     web_utilizada: bool
+    web_llamadas: int = 0
+    estado: str = "completed"
+    tokens: dict[str, int] = Field(default_factory=dict)
     bloques: list[Bloque]
     fuentes: list[Fuente]
     avisos: list[str]
-

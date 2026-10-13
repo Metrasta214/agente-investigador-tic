@@ -40,7 +40,7 @@ class InvestigadorService:
         params = dict(model=self.settings.model, instructions=instructions,
                       input=request.pregunta, max_output_tokens=6000, store=False)
         if request.usar_web:
-            params.update(tools=[{"type": "web_search"}], tool_choice="required")
+            params.update(tools=[{"type": "web_search"}], tool_choice="required", max_tool_calls=3)
         async with AsyncOpenAI(api_key=self.settings.api_key, timeout=110.0, max_retries=0) as client:
             response = await client.responses.create(**params)
         return self.procesar(response.model_dump(), request, fecha)
@@ -78,5 +78,8 @@ class InvestigadorService:
             raise ValueError("El modelo no devolvió texto. Intenta una consulta más concreta.")
         return InvestigacionResponse(pregunta=request.pregunta, modo=request.modo, modelo=self.settings.model,
             fecha=fecha, web_solicitada=request.usar_web, web_utilizada=web,
+            web_llamadas=sum(item.get("type") == "web_search_call" for item in data.get("output", [])),
+            estado=data.get("status", "unknown"),
+            tokens={name: value for name, value in (data.get("usage") or {}).items()
+                    if name in ("input_tokens", "output_tokens", "total_tokens") and isinstance(value, int)},
             bloques=bloques, fuentes=list(fuentes.values()), avisos=avisos)
-

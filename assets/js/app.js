@@ -80,6 +80,7 @@ class RadarApp {
     const d = this.resultado;
     const text = ["RADAR TIC", d.pregunta, "Fecha: " + d.fecha, "Modo: " + d.modo,
       "Modelo: " + d.modelo, "Web solicitada: " + d.web_solicitada, "Web utilizada: " + d.web_utilizada,
+      "Estado: " + d.estado, "Llamadas web: " + d.web_llamadas, "Tokens: " + JSON.stringify(d.tokens),
       ...d.avisos, "", ...d.bloques.map(b => b.texto), "", "FUENTES",
       ...d.fuentes.map(f => f.titulo + "\n" + f.url)].join("\n\n");
     const url = URL.createObjectURL(new Blob([text], {type:"text/plain;charset=utf-8"}));
