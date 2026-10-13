@@ -74,6 +74,7 @@ En macOS/Linux usa `python3 -m venv .venv`, `.venv/bin/python -m pip install -r 
 | .gitignore | Exclusión de credenciales y archivos temporales |
 | requirements.txt | Dependencias directas con versiones verificadas |
 | vercel.json | Selección del framework FastAPI |
+| pyproject.toml | Punto de entrada explícito de Vercel: app.main:app |
 | docs/evidencias.md | Resultados reales y experimentos académicos pendientes |
 | docs/evidencias/ | Registros de verificación sin credenciales |
 | tests/test_app.py | Pruebas automatizadas sin consumir OpenAI |
@@ -163,7 +164,10 @@ integra la versión validada en main. No fabriques commits de trabajo no realiza
 6. Despliega y verifica /api/health, la página principal y una investigación con citas.
 7. Si modificas variables, vuelve a desplegar. Revisa logs ante errores.
 
-La aplicación exporta `app` desde app.py y app/main.py. Vercel dispone de soporte
+La aplicación exporta `app` desde app.py y app/main.py. `pyproject.toml` configura
+`app.main:app` como punto de entrada de Vercel para evitar la ambigüedad entre
+el lanzador `app.py` y el paquete `app/`. El inicio local sigue siendo `python app.py`.
+Vercel dispone de soporte
 nativo para FastAPI; se evita una configuración antigua de builders y rewrites.
 Las consultas dependen de los límites de duración de tu plan: ante timeouts usa
 el modo rápido o ajusta la duración permitida desde Vercel según tu plan.

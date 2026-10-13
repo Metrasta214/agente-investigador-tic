@@ -1,0 +1,4 @@
+# Keep dependencies in requirements.txt; app.py remains the local launcher.
+# An explicit module avoids the collision between app.py and the app/ package.
+[tool.vercel]
+entrypoint = "app.main:app"
