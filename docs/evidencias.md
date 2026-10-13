@@ -1,51 +1,90 @@
-# Evidencias de la práctica (completar con resultados reales)
+# Evidencias de la práctica 2.2
 
-Nombre:  
-Fecha y hora:  
-Pregunta idéntica para A y B:  
-Modelo y modo utilizado:
+Revisión: 12 de octubre de 2026, referencia America/Mexico_City.
+Implementación propia basada en la guía; no es el ZIP original del docente.
+
+## Comprobaciones reales sin cargos
+
+- Python 3.13.7 y pip check sin conflictos.
+- Suite inicial: 6 aprobadas. Suite ampliada: **10 aprobadas en 0.83 s**.
+- Servidor existente en 5000: health respondió 200. Código corregido verificado en 5001.
+- Recursos públicos 200, entrada inválida 422 y archivos privados 404.
+- .env ignorado y no versionado. Se revisaron archivos versionados, historial y
+  respuestas HTTP buscando los secretos existentes, sin imprimirlos.
+- Registro: [verificacion-local.json](evidencias/verificacion-local.json).
+- Pruebas simuladas verificaron herramientas, citas, respuestas incompletas,
+  errores sin filtración y bloqueo en Vercel sin código de acceso separado.
+- No hubo consultas pagadas. Las pruebas simuladas no son investigaciones reales.
+
+## Experimentos A y B: pendientes de presupuesto
+
+Pregunta idéntica:
+
+> ¿Cuáles son las tendencias de agentes de inteligencia artificial durante 2026?
+
+Modelo: gpt-6-luna, conservado. Modo previsto para ambos: rapido.
+Presupuesto: solicitado una sola vez, todavía sin respuesta.
+Fecha de las investigaciones: pendiente; no se sustituye por la fecha de revisión.
 
 | Criterio | A: sin Web Search | B: con Web Search |
 |---|---|---|
-| Actualidad | Pendiente | Pendiente |
-| Fuentes | Pendiente | Pendiente |
-| Evidencia verificable | Pendiente | Pendiente |
-| Fechas | Pendiente | Pendiente |
-| Profundidad | Pendiente | Pendiente |
-| Posibilidad de comprobar afirmaciones | Pendiente | Pendiente |
+| Actualidad | No evaluada: sin respuesta real | No evaluada: sin respuesta real |
+| Presencia de fuentes | No evaluada | No evaluada |
+| Evidencia verificable | No evaluada | No evaluada |
+| Fechas | No evaluadas | No evaluadas |
+| Profundidad | No evaluada | No evaluada |
+| Posibilidad de comprobar afirmaciones | No evaluada | No evaluada |
 
-Conserva los dos TXT y capturas. Explica lo observado, sin asumir que usar web
-garantiza exactitud.
+Al ejecutarlos, conservar JSON y TXT con fecha UTC, modelo, modo, estado,
+web solicitada/utilizada, llamadas, tokens y fuentes recibidas.
 
-## Perspectivas diferentes
+## Experimento C: distintas perspectivas
 
-Pregunta:  
-Perspectivas identificadas:  
-Fuentes y limitaciones:
+> ¿Qué perspectivas existen sobre el impacto de la IA generativa en el trabajo de los programadores?
 
-## Investigación temporal
+Pendiente de presupuesto. No hay perspectivas observadas ni fuentes reales que analizar.
 
-Pregunta:  
-Fecha de consulta:
+## Análisis temporal y evaluación de fuentes
 
-Escala: 1 = baja, 2 = media, 3 = alta. Justifica cada valoración; la fecha de
-consulta no equivale a la fecha de publicación.
+Se reutilizará B sin duplicar la consulta. No se obtuvieron fuentes de esa
+investigación: son insuficientes para asignar puntuaciones justificadas.
+Escala: 1 = baja, 2 = media, 3 = alta.
 
-| Fuente y URL | Fecha de publicación | Autoridad 1–3 | Actualidad 1–3 | Confiabilidad 1–3 | Justificación |
-|---|---|---|---|---|---|
-| 1. Pendiente | | | | | |
-| 2. Pendiente | | | | | |
-| 3. Pendiente | | | | | |
+| Fuente y URL | Publicación | Consulta | Autoridad | Actualidad | Confiabilidad | Justificación |
+|---|---|---|---|---|---|---|
+| Pendiente de B: fuente 1 | No comprobada | Pendiente | — | — | — | Sin fuente real |
+| Pendiente de B: fuente 2 | No comprobada | Pendiente | — | — | — | Sin fuente real |
+| Pendiente de B: fuente 3 | No comprobada | Pendiente | — | — | — | Sin fuente real |
 
-## Despliegue
+La **fecha de publicación** corresponde al contenido; la **fecha de consulta**
+registra cuándo se examinó. Si no hay publicación o actualización verificable,
+se indicará “no disponible”, sin reemplazarla por la fecha de consulta.
 
-URL GitHub:  
-URL Vercel:  
-Problema encontrado:  
-Causa y solución:  
-Verificación de que la API Key no aparece en el navegador ni en Git:
+## Interfaz y capturas
 
-## Conclusiones personales
+Navegador no disponible; no se tomaron capturas. Pendientes: A, B, C, diseño
+móvil/tableta/escritorio, envío del formulario, citas y TXT desde navegador real.
+No se sustituyen capturas por imágenes generadas o datos simulados.
 
-Explica qué aprendiste sobre agentes, herramientas, OOP, FastAPI, Git, despliegue
-y protección de variables; incluye dificultades realmente observadas.
+## GitHub y Vercel
+
+- GitHub: publicación en curso; se registrará la URL después de verificarla.
+- Vercel: no desplegado. Falta presupuesto, investigación real local y conectar
+  la cuenta. No hay resultados de build, runtime ni investigación en producción.
+- main conserva el estado base; los cambios están en feature/agente-investigador.
+  La integración final queda pendiente de la investigación real validada.
+- Configuración FastAPI contrastada con documentación oficial.
+- Antes de desplegar: OPENAI_API_KEY, OPENAI_MODEL y APP_ACCESS_TOKEN en variables
+  del servidor. El código debe ser distinto de la API Key y no estar en GitHub.
+  Vercel bloquea consultas si falta el código o coincide con la clave.
+
+## Borrador informal de conclusiones para revisar
+
+Al revisar Radar TIC entendí cómo se separan la interfaz, las rutas de FastAPI,
+la configuración y el servicio que usa OpenAI. Las clases ayudan a organizar esas
+responsabilidades. También comprobé la validación de datos y que los archivos
+privados no se entregan por HTTP. Registré el estado inicial y las correcciones
+en Git, sin inventar un historial anterior. La búsqueda web está preparada para
+aportar fuentes, pero todavía me falta comparar sus resultados reales. Para
+publicar con seguridad no basta con ocultar la API Key: también hay que restringir
+el acceso a las consultas. El despliegue y su validación siguen pendientes.

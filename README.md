@@ -5,7 +5,7 @@ Implementación propia basada en la guía de la práctica; no es el ZIP original
 
 ## Inicio en Windows
 
-Necesitas Python 3.12 e Internet. Descomprime el ZIP y abre la carpeta
+Necesitas Python 3.12 o 3.13 e Internet (se verificó Python 3.13.7). Abre la carpeta
 `agente-investigador-tic` en VS Code. En su terminal PowerShell ejecuta:
 
 ```powershell
@@ -48,6 +48,9 @@ En macOS/Linux usa `python3 -m venv .venv`, `.venv/bin/python -m pip install -r 
   solicitados al modelo. El texto generado no está garantizado como un esquema rígido.
 - Citas recibidas de OpenAI enlazadas dentro de la respuesta y lista de fuentes.
 - Fecha de consulta, modelo, modo y confirmación de búsqueda realmente completada.
+- Estado, tokens reportados y número de llamadas web. Cada solicitud admite como
+  máximo tres llamadas de herramientas y 6000 tokens de salida; esto no sustituye
+  un presupuesto por sesión o por cuenta.
 - Descarga del resultado en TXT para conservar evidencia.
 - Estados de carga y errores de clave, cuota, conexión y tiempo de espera.
 - Interfaz adaptable sin dependencias externas de JavaScript.
@@ -71,8 +74,18 @@ En macOS/Linux usa `python3 -m venv .venv`, `.venv/bin/python -m pip install -r 
 | .gitignore | Exclusión de credenciales y archivos temporales |
 | requirements.txt | Dependencias directas con versiones verificadas |
 | vercel.json | Selección del framework FastAPI |
-| docs/evidencias.md | Plantillas vacías de pruebas y evaluación |
+| docs/evidencias.md | Resultados reales y experimentos académicos pendientes |
+| docs/evidencias/ | Registros de verificación sin credenciales |
 | tests/test_app.py | Pruebas automatizadas sin consumir OpenAI |
+| scripts/verificar_local.py | Auditoría HTTP, archivos e historial sin llamadas pagadas |
+| scripts/publicar_github.py | Publicación usando la cuenta comprobada y credenciales de Git en memoria |
+
+`Settings` encapsula configuración; Pydantic valida datos; `InvestigadorService`
+construye instrucciones y procesa la respuesta. `Config`, `Api` y `RadarApp`
+separan rutas, transporte y comportamiento de la interfaz. Los `__init__.py`
+identifican paquetes Python. `.python-version` indica Python 3.12 para desplegar;
+`.vercelignore` excluye secretos y archivos innecesarios del paquete de ejecución.
+`requirements-dev.txt` incorpora las dependencias de pruebas.
 
 Flujo: formulario → Api → POST /api/investigar → validación Pydantic →
 InvestigadorService → OpenAI (con o sin herramienta) → texto y citas → interfaz.
@@ -110,8 +123,10 @@ No se incluyen investigaciones ficticias ni conclusiones personales inventadas.
 
 ## Git/GitHub
 
-Este ZIP contiene archivos, no un historial Git. Crea tu repositorio y registra
-cambios reales conforme configures, pruebes y ajustes el proyecto.
+Se recibió el proyecto sin historial. Esta revisión inicializó `main`, registró
+el estado base y creó `feature/agente-investigador`. La identidad se tomó de la
+configuración existente. Los commits corresponden al trabajo real de esta sesión.
+La integración final en `main` queda pendiente de validar una investigación real.
 
 ```bash
 git init
@@ -141,8 +156,10 @@ integra la versión validada en main. No fabriques commits de trabajo no realiza
    contiene app.py y requirements.txt; selecciona FastAPI si no se detecta.
 3. No configures una carpeta de salida estática ni un comando de build de Node.
 4. Agrega OPENAI_API_KEY y OPENAI_MODEL como variables de entorno del servidor.
-5. Opcionalmente define APP_ACCESS_TOKEN con un código aleatorio distinto de la
-   API Key para limitar quién puede generar consumo. Quien lo conozca podrá consultar.
+5. Define obligatoriamente APP_ACCESS_TOKEN con un código aleatorio distinto de la
+   API Key. Vercel bloquea consultas si falta o coincide con la clave. Guárdalo solo
+   en variables del servidor o en .env, nunca en GitHub. La interfaz pedirá este
+   código en el campo de acceso; quien lo conozca podrá generar consumo.
 6. Despliega y verifica /api/health, la página principal y una investigación con citas.
 7. Si modificas variables, vuelve a desplegar. Revisa logs ante errores.
 
@@ -150,7 +167,8 @@ La aplicación exporta `app` desde app.py y app/main.py. Vercel dispone de sopor
 nativo para FastAPI; se evita una configuración antigua de builders y rewrites.
 Las consultas dependen de los límites de duración de tu plan: ante timeouts usa
 el modo rápido o ajusta la duración permitida desde Vercel según tu plan.
-Este ZIP no ha sido desplegado desde esta conversación.
+Todavía no se ha desplegado: falta presupuesto autorizado, una investigación
+real validada en local y conectar Vercel. No se contrataron planes de pago.
 
 ## Seguridad y límites
 
@@ -177,7 +195,37 @@ que se presenten como investigación real.
 
 Las pruebas usan un proveedor simulado: verifican el contrato, citas, errores,
 protección de archivos y activación/desactivación de herramientas sin cargos.
-La consulta real a OpenAI y la publicación en Vercel deben verificarse con tu cuenta.
+La consulta real a OpenAI y la publicación en Vercel siguen pendientes.
+
+## Revisión del 12 de octubre de 2026
+
+- Se analizaron backend, frontend, configuración, dependencias y pruebas.
+- Faltaban pytest y httpx; se instalaron desde `requirements-dev.txt`.
+  Las seis pruebas iniciales pasaron. La suite ampliada pasó **10 pruebas en 0.83 s**;
+  `pip check` no encontró conflictos.
+- El servidor existente respondió en 5000. Se inició otra instancia en
+  `http://127.0.0.1:5001` para verificar el código corregido sin interrumpirlo.
+  Reinicia tu proceso en 5000 para cargar los cambios.
+- Se comprobaron rutas y recursos HTTP, validación 422, archivos privados 404,
+  `.env` ignorado y ausencia de secretos existentes en archivos, historial y HTTP.
+- La documentación oficial confirma compatibilidad de `gpt-6-luna` con Responses
+  API y Web Search. Se conservó el modelo; no se verificaron saldo ni permisos reales.
+- Se corrigió `/docs`: su política bloqueaba Swagger; ahora permite su CDN solo
+  en esa ruta y protege el script de inicio con un nonce.
+- Se añadieron pruebas para errores sin filtración, consumo reportado y bloqueo
+  de Vercel sin un código de acceso separado.
+- Navegador no disponible: envío del formulario, descarga TXT, capturas y diseño
+  móvil/tableta/escritorio siguen pendientes de verificación visual.
+- **Cero consultas pagadas**: presupuesto solicitado, todavía sin respuesta.
+
+Con un servidor iniciado, repite las comprobaciones HTTP sin cargos:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verificar_local.py --url http://127.0.0.1:5001
+```
+
+El registro queda en `docs/evidencias/verificacion-local.json`. Las pruebas con
+proveedor simulado no sustituyen los experimentos académicos A, B y C.
 
 ## Entrega
 
@@ -188,4 +236,5 @@ La consulta real a OpenAI y la publicación en Vercel deben verificarse con tu c
 ## Referencias oficiales consultadas
 
 - https://developers.openai.com/api/docs/guides/tools-web-search
+- https://developers.openai.com/api/docs/models/gpt-6-luna
 - https://vercel.com/docs/frameworks/backend/fastapi

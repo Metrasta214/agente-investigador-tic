@@ -1,0 +1,84 @@
+{
+  "fecha_utc": "2026-10-13T02:47:10.630786+00:00",
+  "url": "http://127.0.0.1:5001",
+  "modelo": "gpt-6-luna",
+  "archivos_git_revisados": 29,
+  "historial_sin_secretos": true,
+  "consultas_openai": 0,
+  "comprobaciones": [
+    {
+      "ruta": "/",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/api/health",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/assets/js/app.js",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/assets/js/api.js",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/assets/js/config.js",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/assets/css/styles.css",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/favicon.ico",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/docs",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/openapi.json",
+      "estado": 200,
+      "sin_secretos": true
+    },
+    {
+      "ruta": "/.env",
+      "estado": 404
+    },
+    {
+      "ruta": "/.git/config",
+      "estado": 404
+    },
+    {
+      "ruta": "/app/core/config.py",
+      "estado": 404
+    },
+    {
+      "ruta": "/requirements.txt",
+      "estado": 404
+    },
+    {
+      "ruta": "/assets/../.env",
+      "estado": 404
+    },
+    {
+      "ruta": "/assets/%2e%2e/.env",
+      "estado": 404
+    },
+    {
+      "validacion": 422,
+      "acceso_requerido": false
+    }
+  ],
+  "navegador": "No disponible: revisión visual y capturas pendientes"
+}

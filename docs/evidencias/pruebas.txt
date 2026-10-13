@@ -1,0 +1,7 @@
+Revisión: 2026-10-12 (America/Mexico_City).
+Comando: .\.venv\Scripts\python.exe -m pytest -q
+Resultado real: 10 passed in 0.83s
+Comando: .\.venv\Scripts\python.exe -m pip check
+Resultado real: No broken requirements found.
+Proveedor simulado: no hubo llamadas pagadas.
+No hubo revisión visual ni descarga TXT desde navegador.
