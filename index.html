@@ -1,150 +1,79 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Radar TIC · Agente investigador</title>
-    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./assets/css/styles.css" />
-    <script type="module" src="/assets/js/app.js"></script>
-  </head>
-  <body>
-    <header>
-      <a class="brand" href="/"
-        ><img src="/assets/favicon.svg" alt="" width="38" height="38" />Radar
-        <strong>TIC</strong></a
-      ><span class="label">LABORATORIO DE INVESTIGACIÓN</span
-      ><span id="connection" role="status">Conectando…</span>
-    </header>
-    <main>
-      <section class="intro">
-        <div>
-          <p class="eyebrow">EXPLORA · CONTRASTA · COMPRENDE</p>
-          <h1>Una buena pregunta.<br /><em>Nuevas perspectivas.</em></h1>
-          <p class="subtitle">
-            Investiga tecnología con inteligencia artificial y fuentes que
-            puedes consultar.
-          </p>
-        </div>
-        <div class="radar" aria-hidden="true"><span></span><i></i></div>
-      </section>
-      <div class="workspace">
-        <section class="panel composer">
-          <div class="section-title">
-            <span class="number">01</span>
-            <h2>Tu investigación</h2>
-          </div>
-          <form id="research-form">
-            <label for="question">¿Qué quieres descubrir?</label
-            ><textarea
-              id="question"
-              minlength="8"
-              maxlength="2000"
-              rows="6"
-              required
-              placeholder="¿Cómo están cambiando los agentes de IA el trabajo de los programadores?"
-            ></textarea>
-            <div class="hint">
-              <span>Sé específico para obtener mejores resultados.</span
-              ><span id="count">0 / 2000</span>
-            </div>
-            <div class="examples">
-              <button
-                type="button"
-                data-question="¿Cuáles son las tendencias de agentes de inteligencia artificial durante 2026?"
-              >
-                Agentes de IA</button
-              ><button
-                type="button"
-                data-question="Compara las ventajas y limitaciones de LoRaWAN y Wi-Fi para monitorear cultivos."
-              >
-                IoT en agricultura</button
-              ><button
-                type="button"
-                data-question="¿Qué perspectivas existen sobre el impacto de la IA generativa en el trabajo de los programadores?"
-              >
-                IA y empleo
-              </button>
-            </div>
-            <fieldset>
-              <legend>Profundidad de investigación</legend>
-              <div class="modes">
-                <label
-                  ><input
-                    type="radio"
-                    name="mode"
-                    value="rapido"
-                    checked
-                  /><span><b>Rápido</b><small>Lo esencial</small></span></label
-                >
-                <label
-                  ><input type="radio" name="mode" value="comparativo" /><span
-                    ><b>Comparativo</b><small>Contrasta ideas</small></span
-                  ></label
-                >
-                <label
-                  ><input type="radio" name="mode" value="profundo" /><span
-                    ><b>Profundo</b><small>Más contexto</small></span
-                  ></label
-                >
-              </div>
-            </fieldset>
-            <label class="web-option"
-              ><input type="checkbox" id="use-web" checked /><span
-                ><b>Buscar en Internet</b
-                ><small>Consulta fuentes externas y actuales.</small></span
-              ></label
-            >
-            <div id="access-field" hidden>
-              <label for="access">Código de acceso al proyecto</label
-              ><input
-                id="access"
-                type="password"
-                autocomplete="off"
-                placeholder="Código configurado por el propietario"
-              /><small>No introduzcas aquí tu API Key de OpenAI.</small>
-            </div>
-            <button type="submit" class="primary" id="submit">
-              Iniciar investigación <span>↗</span>
-            </button>
-            <p class="footnote">
-              Cada consulta utiliza tu cuenta de API de OpenAI. Las respuestas
-              pueden contener errores: verifica sus fuentes.
-            </p>
-          </form>
-          <p id="error" role="alert" hidden></p>
-        </section>
-        <section class="panel result-panel" aria-busy="false">
-          <div class="section-title">
-            <span class="number">02</span>
-            <h2>Resultados</h2>
-            <button id="download" type="button" hidden>Descargar .txt</button>
-          </div>
-          <div id="status" role="status" aria-live="polite"></div>
-          <div id="empty">
-            <div class="empty-icon">◎</div>
-            <h3>El conocimiento empieza aquí</h3>
-            <p>
-              Escribe una pregunta y elige cómo explorarla.<br />Las respuestas
-              y sus fuentes aparecerán en este espacio.
-            </p>
-            <span>RESUMEN · ANÁLISIS · FUENTES</span>
-          </div>
-          <article id="result" hidden>
-            <p id="metadata"></p>
-            <div id="warnings"></div>
-            <div id="answer"></div>
-            <section id="sources">
-              <h3>Fuentes citadas</h3>
-              <ol id="source-list"></ol>
-            </section>
-          </article>
-        </section>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radar TIC · Investiga con perspectiva</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="./assets/fonts/glacial-indifference-regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./assets/fonts/dm-sans-variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <script type="module" src="./assets/js/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Saltar a la investigación</a>
+<header>
+  <a class="brand" href="./" aria-label="Radar TIC, inicio">
+    <svg aria-hidden="true" width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="14" cy="14" r="11"/><circle cx="14" cy="14" r="5"/><path d="M14 3v11l8-8"/><circle cx="14" cy="14" r="1" fill="currentColor"/></svg>
+    Radar <strong>TIC</strong>
+  </a>
+  <div class="header-tools">
+    <span id="connection" role="status">Conectando…</span>
+    <details class="guide">
+      <summary>Cómo funciona</summary>
+      <div class="guide-content">
+        <h2>De la pregunta a las fuentes</h2>
+        <ol><li>Escribe qué quieres investigar o utiliza un ejemplo.</li><li>Elige una síntesis, una comparación o un análisis con más contexto.</li><li>Lee el resultado y consulta sus fuentes. Puedes descargarlo en TXT.</li></ol>
+        <p>La búsqueda web permite consultar información externa. Las respuestas de IA requieren verificación.</p>
       </div>
-      <footer>
-        <span>Radar TIC / Práctica 2.2</span
-        ><span>OpenAI Responses API + Web Search</span>
-      </footer>
-    </main>
-  </body>
+    </details>
+  </div>
+</header>
+<main id="main-content" tabindex="-1">
+  <section class="intro">
+    <p class="eyebrow">INVESTIGACIÓN TECNOLÓGICA</p>
+    <h1>Buenas preguntas.<br><span>Mejores perspectivas.</span></h1>
+    <p class="subtitle">Explora ideas, contrasta información y llega a tus propias conclusiones.</p>
+  </section>
+  <div class="workspace">
+    <section class="panel composer" aria-labelledby="research-title">
+      <div class="section-title"><h2 id="research-title">¿Qué quieres descubrir?</h2><span class="panel-note">Empieza con una pregunta</span></div>
+      <form id="research-form">
+        <label class="sr-only" for="question">Tu pregunta de investigación</label>
+        <textarea id="question" minlength="8" maxlength="2000" rows="4" required aria-describedby="question-help count error" placeholder="Por ejemplo: ¿cómo están cambiando los agentes de IA el trabajo de los programadores?"></textarea>
+        <div class="hint"><span id="question-help">Añade contexto para obtener un análisis más útil.</span><span id="count">0 / 2000</span></div>
+        <div class="examples"><span class="examples-label">Prueba con</span>
+          <button type="button" data-question="¿Cuáles son las tendencias de agentes de inteligencia artificial durante 2026?">Agentes de IA <span aria-hidden="true">↗</span></button>
+          <button type="button" data-question="Compara las ventajas y limitaciones de LoRaWAN y Wi-Fi para monitorear cultivos.">IoT en agricultura <span aria-hidden="true">↗</span></button>
+          <button type="button" data-question="¿Qué perspectivas existen sobre el impacto de la IA generativa en el trabajo de los programadores?">IA y empleo <span aria-hidden="true">↗</span></button>
+        </div>
+        <fieldset><legend>¿Cómo quieres investigarlo?</legend>
+          <div class="modes">
+            <label><input type="radio" name="mode" value="rapido" checked><span><b>Rápido</b><small>Una síntesis de lo esencial.</small></span></label>
+            <label><input type="radio" name="mode" value="comparativo"><span><b>Comparativo</b><small>Contrasta ideas y perspectivas.</small></span></label>
+            <label><input type="radio" name="mode" value="profundo"><span><b>Profundo</b><small>Más contexto y detalle.</small></span></label>
+          </div>
+        </fieldset>
+        <label class="web-option"><input type="checkbox" id="use-web" checked><span><b>Consultar fuentes en Internet</b><small>Actívalo para buscar información externa y actual.</small></span><span class="web-badge" aria-hidden="true">WEB</span></label>
+        <div id="access-field" hidden><label for="access">Código de acceso</label><input id="access" type="password" autocomplete="off" placeholder="Código proporcionado por el propietario"><small>No introduzcas tu API Key de OpenAI.</small></div>
+        <p id="error" role="alert" hidden></p>
+        <div class="form-actions">
+          <p class="footnote" id="cost-help">Cada consulta puede generar consumo de API.<br>Comprueba siempre las fuentes.</p>
+          <button type="submit" class="primary" id="submit" aria-describedby="cost-help">Iniciar investigación <span aria-hidden="true">↗</span></button>
+        </div>
+      </form>
+    </section>
+    <section class="panel result-panel" aria-busy="false" aria-labelledby="results-title">
+      <div class="section-title"><h2 id="results-title">Tu investigación</h2><button id="download" type="button" hidden>Descargar TXT <span aria-hidden="true">↓</span></button></div>
+      <div id="status" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div id="empty"><span class="empty-symbol" aria-hidden="true">↳</span><div><h3>Un espacio para tus hallazgos.</h3><p>El análisis y las fuentes aparecerán aquí cuando envíes tu pregunta.</p></div></div>
+      <article id="result" tabindex="-1" aria-label="Resultado de la investigación" hidden>
+        <h3 id="result-question"></h3><p id="metadata"></p><div id="warnings"></div><div id="answer"></div>
+        <section id="sources"><h3>Fuentes citadas</h3><ol id="source-list"></ol></section>
+      </article>
+    </section>
+  </div>
+  <footer><span>Radar TIC · Práctica 2.2</span><span>Investiga. Contrasta. Comprende.</span></footer>
+</main>
+</body>
 </html>

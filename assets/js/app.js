@@ -1,6 +1,15 @@
 import {Api} from "./api.js";
 import {Config} from "./config.js";
 const $ = id => document.getElementById(id);
+const modos = {rapido: "Rápido", comparativo: "Comparativo", profundo: "Profundo"};
+function textoConTitulos(parent, texto) {
+  const lineas = texto.split("\n");
+  for (const [index, linea] of lineas.entries()) {
+    const match = linea.trim().match(/^(?:#{1,3}\s*)?(?:\*\*)?(Resumen|Hallazgos|Coincidencias|Diferencias|Tendencias|Conclusión|Fuentes):?(?:\*\*)?:?$/i);
+    if (match) { const h = document.createElement("h3"); h.textContent = match[1]; parent.append(h); }
+    else parent.append(document.createTextNode(linea + (index < lineas.length - 1 ? "\n" : "")));
+  }
+}
 function enlace(url, titulo) {
   const node = document.createElement("a");
   const parsed = new URL(url);
@@ -12,7 +21,7 @@ class RadarApp {
   constructor() {
     this.api = new Api(); this.resultado = null;
     $("research-form").addEventListener("submit", e => this.investigar(e));
-    $("question").addEventListener("input", () => this.contar());
+    $("question").addEventListener("input", () => { this.contar(); $("question").removeAttribute("aria-invalid"); });
     document.querySelectorAll("[data-question]").forEach(button => button.addEventListener("click", () => {
       $("question").value = button.dataset.question; this.contar(); $("question").focus();
     }));
@@ -25,16 +34,18 @@ class RadarApp {
       const response = await fetch(Config.health, {signal: AbortSignal.timeout(15000)});
       if (!response.ok) throw new Error();
       const state = await response.json();
-      $("connection").textContent = state.configurada ? "● Servidor configurado" : "○ Configura tu API Key en .env";
+      $("connection").textContent = state.configurada ? "● Servicio disponible" : "○ Servicio pendiente de configuración";
+      $("connection").dataset.state = state.configurada ? "ready" : "offline";
       $("access-field").hidden = !state.acceso_requerido;
-    } catch { $("connection").textContent = "○ Servidor no disponible"; }
+    } catch { $("connection").textContent = "○ Servicio no disponible"; $("connection").dataset.state = "offline"; }
   }
   async investigar(event) {
     event.preventDefault();
     const pregunta = $("question").value.trim();
-    if (pregunta.length < 8) { $("error").textContent = "Escribe una pregunta de al menos 8 caracteres."; $("error").hidden = false; return; }
+    if (pregunta.length < 8) { $("error").textContent = "Escribe una pregunta de al menos 8 caracteres."; $("error").hidden = false; $("question").setAttribute("aria-invalid", "true"); $("question").focus(); return; }
     $("error").hidden = true; $("submit").disabled = true;
-    $("empty").hidden = true; $("result").hidden = true; $("download").hidden = true;
+    $("submit").textContent = "Investigando…";
+    $("empty").hidden = true;
     document.querySelector(".result-panel").setAttribute("aria-busy", "true");
     $("status").textContent = "Investigando… Esto puede tardar hasta dos minutos.";
     try {
@@ -44,16 +55,21 @@ class RadarApp {
       }, $("access").value.trim());
       this.resultado = data; this.mostrar(data);
       $("status").textContent = "Investigación terminada.";
+      $("result").focus({preventScroll: true});
+      if (window.matchMedia("(max-width: 900px)").matches) $("result").scrollIntoView({block: "start", behavior: "auto"});
     } catch(error) {
       $("error").textContent = error.message; $("error").hidden = false;
-      $("status").textContent = "La investigación no pudo completarse."; $("empty").hidden = false;
+      $("status").textContent = this.resultado ? "La nueva consulta falló. Conservamos tu último resultado." : "La investigación no pudo completarse.";
+      $("empty").hidden = Boolean(this.resultado);
     } finally {
       $("submit").disabled = false;
+      $("submit").textContent = "Iniciar investigación ↗";
       document.querySelector(".result-panel").setAttribute("aria-busy", "false");
     }
   }
   mostrar(data) {
-    $("metadata").textContent = new Date(data.fecha).toLocaleString("es-MX") + " · " + data.modo + " · " + data.modelo + " · " + (data.web_utilizada ? "Búsqueda web realizada" : "Sin búsqueda web confirmada");
+    $("result-question").textContent = data.pregunta;
+    $("metadata").textContent = new Date(data.fecha).toLocaleString("es-MX") + " · " + (modos[data.modo] || data.modo) + " · " + data.modelo + " · " + (data.web_utilizada ? "Búsqueda web realizada" : "Sin búsqueda web confirmada");
     $("answer").replaceChildren(); $("warnings").replaceChildren(); $("source-list").replaceChildren();
     for (const aviso of data.avisos) { const p = document.createElement("p"); p.textContent = aviso; $("warnings").append(p); }
     for (const bloque of data.bloques) {
@@ -66,7 +82,13 @@ class RadarApp {
         try { div.append(enlace(cita.url, "[" + cita.titulo + "]")); } catch { div.append(document.createTextNode(chars.slice(cita.inicio, cita.fin).join(""))); }
         cursor = cita.fin;
       }
-      div.append(document.createTextNode(chars.slice(cursor).join(""))); $("answer").append(div);
+      div.append(document.createTextNode(chars.slice(cursor).join("")));
+      for (const node of [...div.childNodes]) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        const fragment = document.createDocumentFragment();
+        textoConTitulos(fragment, node.textContent); node.replaceWith(fragment);
+      }
+      $("answer").append(div);
     }
     for (const fuente of data.fuentes) {
       const li = document.createElement("li");
