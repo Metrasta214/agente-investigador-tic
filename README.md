@@ -229,9 +229,11 @@ proveedor simulado no sustituyen los experimentos académicos A, B y C.
 
 ## Entrega
 
-- URL GitHub: pendiente.
+- URL GitHub: https://github.com/Metrasta214/agente-investigador-tic
+- Avances revisados: https://github.com/Metrasta214/agente-investigador-tic/tree/feature/agente-investigador
 - URL Vercel: pendiente.
-- Conclusiones personales: redactar después de realizar las pruebas.
+- Conclusiones: borrador basado en lo comprobado en `docs/evidencias.md`; completar
+  después de los experimentos reales y el despliegue.
 
 ## Referencias oficiales consultadas
 

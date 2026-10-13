@@ -68,7 +68,8 @@ No se sustituyen capturas por imágenes generadas o datos simulados.
 
 ## GitHub y Vercel
 
-- GitHub: publicación en curso; se registrará la URL después de verificarla.
+- GitHub: https://github.com/Metrasta214/agente-investigador-tic (público, publicado).
+- Avances: https://github.com/Metrasta214/agente-investigador-tic/tree/feature/agente-investigador
 - Vercel: no desplegado. Falta presupuesto, investigación real local y conectar
   la cuenta. No hay resultados de build, runtime ni investigación en producción.
 - main conserva el estado base; los cambios están en feature/agente-investigador.
