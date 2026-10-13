@@ -1,4 +1,19 @@
-# Keep dependencies in requirements.txt; app.py remains the local launcher.
+[project]
+name = "agente-investigador-tic"
+version = "1.0.0"
+requires-python = ">=3.12"
+# Keep these pins in sync with requirements.txt for local installations.
+dependencies = [
+    "fastapi==0.143.0",
+    "uvicorn==0.54.0",
+    "openai==3.29.0",
+    "python-dotenv==1.2.4",
+]
+
+# This is an application, not an installable Python distribution.
+[tool.uv]
+package = false
+
 # An explicit module avoids the collision between app.py and the app/ package.
 [tool.vercel]
 entrypoint = "app.main:app"
